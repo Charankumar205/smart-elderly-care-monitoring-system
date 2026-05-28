@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Elderly Care Monitoring Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1><i class="fas fa-heartbeat"></i> Smart Elderly Care Monitoring System</h1>
+                <p>Real-time Health Monitoring & Risk Assessment Dashboard</p>
+            </div>
+            <div class="header-status">
+                <span id="system-time" class="system-time"></span>
+                <div class="status-indicator online">
+                    <span class="status-dot"></span> System Online
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="dashboard-nav">
+            <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
+            <button class="nav-btn" data-tab="form">New Assessment</button>
+            <button class="nav-btn" data-tab="history">History</button>
+            <button class="nav-btn" data-tab="settings">Settings</button>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <!-- Dashboard Tab -->
+            <section id="dashboard-tab" class="tab-content active">
+                <div class="dashboard-grid">
+                    <!-- Alert Panel -->
+                    <div id="alert-panel" class="alert-panel green-safe">
+                        <div class="alert-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h3>System Status</h3>
+                            <p id="alert-message">No active alerts. System ready for assessment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Patient Information -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-user-nurse"></i> Patient Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Patient ID:</label>
+                                <span id="patient-id">P-2026-001</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Age:</label>
+                                <span id="patient-age">75 years</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Last Assessment:</label>
+                                <span id="last-assessment">No data</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Condition:</label>
+                                <span id="patient-condition" class="badge-low">Stable</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fall Detection Result -->
+                    <div class="result-card">
+                        <h3><i class="fas fa-camera"></i> Fall Detection Analysis</h3>
+                        <div class="result-content">
+                            <div class="result-item">
+                                <label>Posture Detection:</label>
+                                <span id="fall-posture" class="result-value">No image analyzed yet</span>
+                            </div>
+                            <div class="result-item">
+                                <label>Confidence Score:</label>
+                                <div class="progress-bar">
+                                    <div id="fall-confidence-bar" class="progress-fill" style="width: 0%;"></div>
+                                </div>
+                                <span id="fall-confidence">0%</span>
+                            </div>
+                            <div class="result-item">
+                                <label>Emergency Status:</label>
+                                <span id="fall-emergency" class="badge-safe">Safe</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NLP Health Analysis -->
+                    <div class="result-card">
+                        <h3><i class="fas fa-brain"></i> NLP Health Analysis</h3>
+                        <div class="result-content">
+                            <div class="result-item">
+                                <label>Detected Symptoms:</label>
+                                <div id="symptoms-list" class="symptoms-list">
+                                    <span class="badge-info">None detected yet</span>
+                                </div>
+                            </div>
+                            <div class="result-item">
+                                <label>Health Sentiment:</label>
+                                <span id="health-sentiment" class="result-value">-</span>
+                            </div>
+                            <div class="result-item">
+                                <label>Severity Level:</label>
+                                <span id="severity-level" class="badge-low">Low</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Prediction -->
+                    <div class="result-card risk-card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Risk Prediction</h3>
+                        <div class="risk-gauge">
+                            <div id="risk-meter" class="risk-meter green">
+                                <div class="risk-value" id="risk-score">0%</div>
+                            </div>
+                        </div>
+                        <div class="result-content">
+                            <div class="result-item">
+                                <label>Risk Category:</label>
+                                <span id="risk-category" class="badge-low">Low Risk</span>
+                            </div>
+                            <div class="result-item">
+                                <label>Alert Status:</label>
+                                <span id="alert-status" class="badge-safe">GREEN SAFE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="recommendations-card">
+                        <h3><i class="fas fa-lightbulb"></i> Medical Recommendations</h3>
+                        <ul id="recommendations-list" class="recommendations-list">
+                            <li>No assessment data available yet</li>
+                        </ul>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="actions-card">
+                        <h3><i class="fas fa-tasks"></i> Quick Actions</h3>
+                        <div class="actions-grid">
+                            <button class="action-btn primary" onclick="switchTab('form')">
+                                <i class="fas fa-plus-circle"></i> New Assessment
+                            </button>
+                            <button class="action-btn secondary" onclick="downloadReport()">
+                                <i class="fas fa-download"></i> Download Report
+                            </button>
+                            <button class="action-btn secondary" onclick="printDashboard()">
+                                <i class="fas fa-print"></i> Print Dashboard
+                            </button>
+                            <button class="action-btn warning" onclick="contactEmergency()">
+                                <i class="fas fa-phone"></i> Emergency
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Assessment Form Tab -->
+            <section id="form-tab" class="tab-content">
+                <div class="form-container">
+                    <h2>Complete Health Assessment</h2>
+                    
+                    <!-- Image Upload Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-camera"></i> Step 1: Upload Patient Image</h3>
+                        <div class="upload-area" id="upload-area">
+                            <input type="file" id="image-input" accept="image/*" style="display: none;">
+                            <div class="upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag and drop an image or click to select</p>
+                                <small>Supported formats: PNG, JPG, JPEG, GIF, BMP</small>
+                            </div>
+                        </div>
+                        <div id="image-preview" class="image-preview"></div>
+                        <button class="btn-primary" onclick="analyzeImage()">Analyze Image</button>
+                    </div>
+
+                    <!-- Report Input Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-pen"></i> Step 2: Caretaker Health Report</h3>
+                        <textarea id="report-input" class="textarea-input" placeholder="Enter patient health report...
+Example:
+- Patient is feeling weak and dizzy
+- Breathing difficulty reported
+- Not responding properly since morning
+- Temperature elevated
+
+Describe symptoms, behavioral observations, and physical condition changes..."
+rows="6"></textarea>
+                        <button class="btn-primary" onclick="analyzeReport()">Analyze Report</button>
+                    </div>
+
+                    <!-- Assessment Results -->
+                    <div class="form-section results-section" id="results-section" style="display: none;">
+                        <h3><i class="fas fa-chart-bar"></i> Assessment Results</h3>
+                        <div class="results-grid">
+                            <div class="result-panel" id="fall-result-panel"></div>
+                            <div class="result-panel" id="nlp-result-panel"></div>
+                            <div class="result-panel" id="risk-result-panel"></div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-section">
+                        <button class="btn-primary btn-large" onclick="submitCompleteAssessment()">
+                            Complete Assessment & Generate Report
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Tab -->
+            <section id="history-tab" class="tab-content">
+                <div class="history-container">
+                    <h2>Assessment History</h2>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Patient ID</th>
+                                <th>Posture</th>
+                                <th>Risk Level</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #888;">No assessment history yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="settings-tab" class="tab-content">
+                <div class="settings-container">
+                    <h2>System Settings</h2>
+                    <div class="settings-form">
+                        <div class="setting-group">
+                            <label>Patient Age:</label>
+                            <input type="number" id="setting-age" value="75" min="50" max="120">
+                        </div>
+                        <div class="setting-group">
+                            <label>Emergency Contact:</label>
+                            <input type="tel" id="setting-emergency" placeholder="+1-234-567-8900">
+                        </div>
+                        <div class="setting-group">
+                            <label>Risk Alert Threshold:</label>
+                            <select id="setting-threshold">
+                                <option value="0.5">Sensitive (50%)</option>
+                                <option value="0.65" selected>Normal (65%)</option>
+                                <option value="0.8">Relaxed (80%)</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="{{ url_for('static', filename='js/monitoring.js') }}"></script>
+</body>
+</html>

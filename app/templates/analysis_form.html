@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Health Assessment Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1><i class="fas fa-clipboard-list"></i> Complete Health Assessment</h1>
+                <p>Comprehensive Elderly Patient Monitoring & Analysis</p>
+            </div>
+            <div class="header-status">
+                <a href="/monitoring/" class="action-btn secondary" style="text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <div class="form-container">
+                <!-- Step 1: Image Upload -->
+                <div class="assessment-step">
+                    <div class="step-header">
+                        <span class="step-number">1</span>
+                        <h2>Upload Patient Image</h2>
+                        <p class="step-description">Analyze patient posture and condition using computer vision</p>
+                    </div>
+
+                    <div class="step-content">
+                        <div class="upload-area" id="upload-area">
+                            <input type="file" id="image-input" accept="image/*" style="display: none;">
+                            <div class="upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag and drop an image or click to select</p>
+                                <small>Supported: PNG, JPG, JPEG, GIF, BMP</small>
+                                <small>Maximum size: 10 MB</small>
+                            </div>
+                        </div>
+                        <div id="image-preview" class="image-preview"></div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn-primary" onclick="analyzeImage()">
+                            <i class="fas fa-search"></i> Analyze Image
+                        </button>
+                    </div>
+
+                    <div id="step1-results" class="step-results" style="display: none;">
+                        <h4>Fall Detection Results:</h4>
+                        <div class="results-grid">
+                            <div class="result-item-inline">
+                                <label>Detected Posture:</label>
+                                <span id="fall-posture-result" class="result-badge">-</span>
+                            </div>
+                            <div class="result-item-inline">
+                                <label>Confidence:</label>
+                                <span id="fall-confidence-result">0%</span>
+                            </div>
+                            <div class="result-item-inline">
+                                <label>Emergency Status:</label>
+                                <span id="fall-emergency-result" class="result-badge">Safe</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Health Report -->
+                <div class="assessment-step">
+                    <div class="step-header">
+                        <span class="step-number">2</span>
+                        <h2>Caretaker Health Report</h2>
+                        <p class="step-description">Document patient symptoms and health observations</p>
+                    </div>
+
+                    <div class="step-content">
+                        <div class="report-input-box">
+                            <label for="report-input">Patient Health Report</label>
+                            <textarea 
+                                id="report-input" 
+                                class="textarea-input" 
+                                placeholder="Describe the patient's current health status...
+
+Example symptoms to report:
+• Weakness or fatigue
+• Dizziness or vertigo
+• Fever or chills
+• Chest pain or discomfort
+• Breathing difficulty
+• Nausea or vomiting
+• Headache
+• Confusion or disorientation
+• Falls or loss of balance
+• Unconsciousness or unresponsiveness
+
+Be specific about when symptoms started and any related observations."
+                                rows="8"
+                            ></textarea>
+                            <small class="text-muted">Detailed reports help identify critical health conditions</small>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn-primary" onclick="analyzeReport()">
+                            <i class="fas fa-brain"></i> Analyze Report
+                        </button>
+                    </div>
+
+                    <div id="step2-results" class="step-results" style="display: none;">
+                        <h4>NLP Analysis Results:</h4>
+                        <div class="results-grid">
+                            <div class="result-item-inline">
+                                <label>Symptoms Detected:</label>
+                                <div id="symptoms-result" class="symptoms-list">
+                                    <span class="badge-info">No symptoms</span>
+                                </div>
+                            </div>
+                            <div class="result-item-inline">
+                                <label>Health Sentiment:</label>
+                                <span id="sentiment-result" class="result-badge">Neutral</span>
+                            </div>
+                            <div class="result-item-inline">
+                                <label>Severity Level:</label>
+                                <span id="severity-result" class="result-badge">Low</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Additional Health Data (Optional) -->
+                <div class="assessment-step">
+                    <div class="step-header">
+                        <span class="step-number">3</span>
+                        <h2>Additional Health Information</h2>
+                        <p class="step-description">Optional: Provide additional patient health data</p>
+                    </div>
+
+                    <div class="step-content">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Patient Age</label>
+                                <input type="number" id="patient-age-input" value="75" min="50" max="120">
+                            </div>
+                            <div class="form-group">
+                                <label>Height (cm)</label>
+                                <input type="number" id="patient-height" placeholder="e.g., 170">
+                            </div>
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="number" id="patient-weight" placeholder="e.g., 70">
+                            </div>
+                            <div class="form-group">
+                                <label>Blood Pressure (systolic)</label>
+                                <input type="number" id="patient-bp-systolic" placeholder="e.g., 120">
+                            </div>
+                            <div class="form-group">
+                                <label>Blood Pressure (diastolic)</label>
+                                <input type="number" id="patient-bp-diastolic" placeholder="e.g., 80">
+                            </div>
+                            <div class="form-group">
+                                <label>Heart Rate (bpm)</label>
+                                <input type="number" id="patient-heart-rate" placeholder="e.g., 72">
+                            </div>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" value="diabetes"> Diabetes
+                            </label>
+                            <label>
+                                <input type="checkbox" value="hypertension"> Hypertension
+                            </label>
+                            <label>
+                                <input type="checkbox" value="heart_disease"> Heart Disease
+                            </label>
+                            <label>
+                                <input type="checkbox" value="stroke_history"> Stroke History
+                            </label>
+                            <label>
+                                <input type="checkbox" value="osteoporosis"> Osteoporosis
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review & Submit -->
+                <div class="assessment-step final-step">
+                    <div class="step-header">
+                        <span class="step-number">4</span>
+                        <h2>Review & Submit</h2>
+                        <p class="step-description">Complete the assessment and generate comprehensive report</p>
+                    </div>
+
+                    <div class="step-content">
+                        <div class="assessment-summary" id="assessment-summary">
+                            <p style="color: #888; text-align: center;">Fill in all sections above to generate summary</p>
+                        </div>
+                    </div>
+
+                    <div class="step-actions final-actions">
+                        <button class="btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-redo"></i> Clear All
+                        </button>
+                        <button class="btn-primary btn-large" onclick="submitCompleteAssessment()">
+                            <i class="fas fa-check-circle"></i> Complete Assessment & Generate Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <style>
+        .assessment-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid #2563eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-header h2 {
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .step-description {
+            color: #64748b;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .step-content {
+            margin: 1.5rem 0;
+        }
+
+        .report-input-box label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .text-muted {
+            color: #94a3b8;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .step-results {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid #10b981;
+        }
+
+        .step-results h4 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .result-item-inline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .result-item-inline label {
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .result-badge {
+            padding: 0.4rem 0.8rem;
+            background: #e0e7ff;
+            color: #312e81;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .form-group input {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .assessment-summary {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 200px;
+        }
+
+        .final-step {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+        }
+
+        .final-actions {
+            justify-content: space-between;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .step-header {
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .final-actions {
+                flex-direction: column;
+            }
+
+            .btn-secondary, .btn-large {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script src="{{ url_for('static', filename='js/monitoring.js') }}"></script>
+    <script>
+        // Form-specific functions
+        function resetForm() {
+            document.getElementById('image-input').value = '';
+            document.getElementById('image-preview').innerHTML = '';
+            document.getElementById('report-input').value = '';
+            document.getElementById('patient-age-input').value = '75';
+            document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
+            document.getElementById('step1-results').style.display = 'none';
+            document.getElementById('step2-results').style.display = 'none';
+            showToast('Form cleared', 'info');
+        }
+
+        // Override analyzeImage for form page
+        const originalAnalyzeImage = window.analyzeImage;
+        window.analyzeImage = async function() {
+            await originalAnalyzeImage();
+            document.getElementById('step1-results').style.display = 'block';
+
+            // Update display
+            if (currentAssessmentData.fall_detection) {
+                document.getElementById('fall-posture-result').textContent = currentAssessmentData.fall_detection.posture;
+                document.getElementById('fall-confidence-result').textContent = Math.round(currentAssessmentData.fall_detection.confidence * 100) + '%';
+                document.getElementById('fall-emergency-result').textContent = currentAssessmentData.fall_detection.emergency_status ? 'Emergency' : 'Safe';
+            }
+        };
+
+        // Override analyzeReport for form page
+        const originalAnalyzeReport = window.analyzeReport;
+        window.analyzeReport = async function() {
+            await originalAnalyzeReport();
+            document.getElementById('step2-results').style.display = 'block';
+
+            // Update display
+            if (currentAssessmentData.nlp_analysis) {
+                const nlp = currentAssessmentData.nlp_analysis;
+                const symptoms = nlp.extracted_symptoms || [];
+                document.getElementById('symptoms-result').innerHTML = symptoms.length > 0
+                    ? symptoms.map(s => `<span class="badge-info">${s}</span>`).join('')
+                    : '<span class="badge-info">No symptoms</span>';
+                document.getElementById('sentiment-result').textContent = nlp.health_sentiment;
+                document.getElementById('severity-result').textContent = nlp.severity_level;
+            }
+        };
+    </script>
+</body>
+</html>

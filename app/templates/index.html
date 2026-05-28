@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Elderly Care Monitoring System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Elderly Care Monitoring System</h1>
+            <p>Advanced health monitoring and risk assessment for elderly care</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#fall-detection">Fall Detection</a></li>
+                <li><a href="#nlp-analysis">NLP Analysis</a></li>
+                <li><a href="#risk-prediction">Risk Prediction</a></li>
+            </ul>
+        </nav>
+        
+        <main>
+            <section id="fall-detection" class="module">
+                <h2>Fall Detection Module</h2>
+                <p>Detects potential falls using accelerometer and gyroscope data from wearable devices.</p>
+            </section>
+            
+            <section id="nlp-analysis" class="module">
+                <h2>NLP Analysis Module</h2>
+                <p>Analyzes health-related text for sentiment, symptoms, and health concerns.</p>
+            </section>
+            
+            <section id="risk-prediction" class="module">
+                <h2>Risk Prediction Module</h2>
+                <p>Predicts health risks based on multiple factors and user data.</p>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2026 Smart Elderly Care System. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
